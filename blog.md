@@ -327,3 +327,90 @@ exactly like what I want: Svelte on the frontend, Motoko on the backend, and
 the description says it uses Internet Identity, ICP's authentication mechanism.
 
 [examples]: https://github.com/dfinity/examples
+
+This example contains an ICP elevator pitch that is compelling:
+
+> The Internet Computer is a novel blockchain that has the unique capability to
+  serve web content while not requiring the end users to use a browser
+  extension, such as Metamask.
+
+No browser extension. Blockchains are so bad at succinctly explaining themselves,
+but this I understand. No browser extension.
+
+When I try to run `dfx start` under the `svelte-motoko-starter` example
+it fails and I see this
+
+```
+$ dfx start
+Warning: The version of DFX used (0.9.2) is different than the version being run (0.9.3).
+This might happen because your dfx.json specifies an older version, or DFX_VERSION is set in your environment.
+We are forwarding the command line to the old version. To disable this warning, set the DFX_WARNING=-version_check environment variable.
+
+Error when trying to forward to project dfx:
+Unknown version '0.9.2'.
+Installed executable: 0.9.3
+```
+
+This seems easy enough to fix: I'll just change the `dfx.json` config to use the latest dfx.
+And `dfx start` works.
+
+I continue following the example instructions to install Internet Identity on my local network.
+
+It fails again:
+
+```
+$ II_ENV=development dfx deploy --no-wallet --argument '(null)'
+Deploying all canisters.
+Creating canisters...
+Creating canister "internet_identity"...
+"internet_identity" canister created with canister id: "rwlgt-iiaaa-aaaaa-aaaaa-cai"
+Building canisters...
+Executing 'src/internet_identity/build.sh'
+could not find ic-cdk-optimizer
+ic-cdk-optimizer version 0.3.1 is needed, please run the following command:
+  cargo install ic-cdk-optimizer --version 0.3.1
+Error: The build step failed for canister 'rwlgt-iiaaa-aaaaa-aaaaa-cai' with an embedded error: The custom tool failed.
+```
+
+It seems tell me how to fix the problem though so I run:
+
+```
+cargo install ic-cdk-optimizer --version 0.3.1
+```
+
+After that succeeds I am able to build and deploy the Internet Identity canister.
+I can browse to its auto-generated Candid web UI.
+I like that ICP has an interface definition that allows these UIs to be auto-generated.
+
+Per the instructions I deploy the backend and frontend canisters,
+but the frontend doesn't work when I load it in the browser.
+The console says
+
+```
+bundle.js:2 Uncaught ReferenceError: process is not defined
+    at bundle.js:2:387929
+(anonymous) @ bundle.js:2
+```
+
+When I run `npm run dev` I see this in the logs:
+
+```
+process/browser (imported by node_modules/js-sha256/src/sha256.js)
+(!) Circular dependency
+```
+
+I guess a circular dependency has caused rollup to not inject "process/browser"
+into my bundled environment?
+
+I discover a rollup plugin that
+is supposed to resolve this problem,
+https://www.npmjs.com/package/rollup-plugin-inject-process-env,
+but this project doesn't use it,
+and I'm not confident I can adapt the project to use it,
+not understanding the `rollup.config.js` file.
+
+I work around the problem by putting this as the first script in `index.html`:
+
+```html
+<script>window.process = { }</script>
+```
