@@ -266,5 +266,64 @@ and visit at `localhost:8080`.
 I don't bother to do that for now.
 
 
-### Deploying to the network
+### Deploying to the network (2022/05/11)
 
+Still going through the quick start hello world tutorial.
+I need to acquire _cycles_, gas.
+
+I ping the internet computer:
+
+```
+$ dfx ping ic
+{
+  "ic_api_version": "0.18.0"  "impl_hash": "b1d54efe7bc5a93a707f64afdbe6d95d172dd976873d4a44989cfdf9fd8d1f45"  "impl_version": "3d6fc111c09d316b2ed28208e4a8202d9293ecb0"  "replica_health_status": "healthy"  "root_key": [48, 129, 130, 48, 29, 6, 13, 43, ... (many bytes)
+}
+```
+
+It's just splatted debug formatting of some kind. Not even valid JSON that I can pipe through a pretty-printer. Look at that huge byte array...
+
+At least it works though.
+
+I am going to acquire cycles from the faucet.
+
+### Claiming a cycles airdrop
+
+Following the instructions here:
+
+> [https://smartcontracts.org/docs/current/developer-docs/quickstart/cycles-faucet/](https://smartcontracts.org/docs/current/developer-docs/quickstart/cycles-faucet/)
+
+I navigate to
+
+> [https://faucet.dfinity.org](https://faucet.dfinity.org)
+
+The instructions in the developer docs say I'll have to authenticate with GitHub,
+but the faucet app says I have to authenticate with Twitter.
+I was not enthusiastic about authenticating with GitHub,
+and am even more turned off by having to link my Twitter account to this faucet.
+
+Is there no devnet for IC where I can just get an airdrop for free?
+
+I ask in the dfinity Supernova Hackathon #general channel:
+
+> I am trying to follow the instructions to use the cycles faucet and the faucet
+  app wants me to authenticate with twitter. Is there any other way to get an
+  airdrop?
+
+> These instructions and hoops make it seem like they are for the mainnet. Is
+  there a devnet with free airdrops?
+
+For now I am going to skip the step of deploying to a real network.
+I can work with the localnet.
+
+
+## Starting from an example
+
+I decide that I want to just start writing something.
+I know that for my dapp I will need to know how to store data on behalf of a user.
+So I am going to look for an example that shows how to write data.
+
+The [examples] repo contains an example called `svelte-motoko-starter` that sounds
+exactly like what I want: Svelte on the frontend, Motoko on the backend, and
+the description says it uses Internet Identity, ICP's authentication mechanism.
+
+[examples]: https://github.com/dfinity/examples
