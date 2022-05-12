@@ -439,3 +439,26 @@ so I am going to duplicate that into my own repo and start using it as a base.
 
 Since this example contains a git submodule for `internet-identity`,
 copying it isn't trival &mdash; I have to reproduce that submodule in my own repo.
+
+After about an hour of hacking I can't get through the Internet Identity authentication flow.
+The web console says "Error: Fail to verify certificate" and the website just hangs forever.
+
+There is a [forum thread on the subject][authf] but no definite solutions.
+
+[authf]: Error: Fail to verify certificate
+
+I figure out how to work around the problem by
+
+1) Upgrading the `internet-identity` submodule to commit e4b23633ea738b75f28d6d0ef14fe6b538d99bc7
+2) Setting the `II_FETCH_ROOT_KEY` environment variable to `1` as in
+
+  > `II_FETCH_ROOT_KEY=1 dfx deploy --no-wallet --argument '(null)'`
+
+I don`t know what this `--argument '(null)'` thing is about,
+but it was in the example instructions.
+The auth flow requires a captcha and it can be disabled with another env var.
+
+I settle on this command to build and deploy `internet-identity`
+
+> `II_FETCH_ROOT_KEY=1 II_DUMMY_CAPTCHA=1 II_DUMMY_AUTH=1 dfx deploy --no-wallet --argument '(null)'`
+
