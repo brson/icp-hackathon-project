@@ -462,3 +462,5 @@ I settle on this command to build and deploy `internet-identity`
 
 > `II_FETCH_ROOT_KEY=1 II_DUMMY_CAPTCHA=1 II_DUMMY_AUTH=1 dfx deploy --no-wallet --argument '(null)'`
 
+I succeed at authenticating my dapp on the local network.
+
