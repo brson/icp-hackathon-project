@@ -1,0 +1,3 @@
+[submodule "attempt1/internet-identity"]
+	path = attempt1/internet-identity
+	url = https://github.com/dfinity/internet-identity.git

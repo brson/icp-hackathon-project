@@ -3,8 +3,20 @@
 It's been more than a year since my [last look at programming on Dfinity].
 With their May 2022 hackathon it was a good opportunity to try again.
 
+We want to make a project that works well with, and takes advantage of,
+ICP's architecture. Some things we think ICP should be good at:
 
-## 2022/05/10
+- Static websites - ICP can serve large amounts of static data, like IPFS.
+- Authentication - ICP has a unique Web Authentication-based identity system.
+- Single page applications - the project's we have seen so far appear to be SPAs.
+
+Some porject ideas:
+
+- A wiki.
+- A deck-based social media game, Pokemon x Tinder.
+- Something like keybase.
+
+## Getting started (2022/05/10)
 
 Day 1 of the hackathon.
 We have a few ideas for the project we want to make,
@@ -25,7 +37,7 @@ suitable for small state.
 
 OK, let's do some tutorials.
 
-### Hello world
+## Hello world
 
 I'm going to go through the [Hello World Quick Start][hwqs]
 I hope this will get me a toolchain and teach me to deploy and run a canister.
@@ -43,7 +55,7 @@ More learnings:
 - ICP can be converted to cycles
 - There are cycles wallets - not clear on if every canister has one
 
-### Installing tools
+## Installing tools
 
 I run
 
@@ -152,7 +164,7 @@ If you want to work on programs right away, try the following commands to get st
 ```
 
 
-### Local deployment
+## Local deployment
 
 In one window I run `dfx start` and in the other `npm install` then `dfx deploy`.
 
@@ -251,7 +263,7 @@ I learn:
 - interacting with ICP requires an accurate clock
 
 
-### Testing on the command line
+## Testing on the command line
 
 I can interact with the canister on the command line:
 
@@ -266,7 +278,7 @@ and visit at `localhost:8080`.
 I don't bother to do that for now.
 
 
-### Deploying to the network (2022/05/11)
+## Deploying to the network (2022/05/11)
 
 Still going through the quick start hello world tutorial.
 I need to acquire _cycles_, gas.
@@ -286,7 +298,7 @@ At least it works though.
 
 I am going to acquire cycles from the faucet.
 
-### Claiming a cycles airdrop
+## Claiming a cycles airdrop
 
 Following the instructions here:
 
@@ -311,6 +323,9 @@ I ask in the dfinity Supernova Hackathon #general channel:
 
 > These instructions and hoops make it seem like they are for the mainnet. Is
   there a devnet with free airdrops?
+
+I probably shouldn't have asked &mdash; I'm really just airing my frustration,
+and I know the answer.
 
 For now I am going to skip the step of deploying to a real network.
 I can work with the localnet.
@@ -402,15 +417,25 @@ process/browser (imported by node_modules/js-sha256/src/sha256.js)
 I guess a circular dependency has caused rollup to not inject "process/browser"
 into my bundled environment?
 
-I discover a rollup plugin that
+I discover a [`rollup-plugin-inject-process-env`] plugin that
 is supposed to resolve this problem,
-https://www.npmjs.com/package/rollup-plugin-inject-process-env,
 but this project doesn't use it,
 and I'm not confident I can adapt the project to use it,
 not understanding the `rollup.config.js` file.
+
+[`rollup-plugin-inject-process-env`]: https://www.npmjs.com/package/rollup-plugin-inject-process-env,
 
 I work around the problem by putting this as the first script in `index.html`:
 
 ```html
 <script>window.process = { }</script>
 ```
+
+
+## Creating a skeleton dapp (2022/05/12)
+
+With only a few modifications I got the `svelte-motoko-starter` example working,
+so I am going to duplicate that into my own repo and start using it as a base.
+
+Since this example contains a git submodule for `internet-identity`,
+copying it isn't trival &mdash; I have to reproduce that submodule in my own repo.
