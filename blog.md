@@ -464,3 +464,47 @@ I settle on this command to build and deploy `internet-identity`
 
 I succeed at authenticating my dapp on the local network.
 
+
+## Creating a canister from within a canister (2022/05/23)
+
+After some time off I have come back to the task.
+I still am unsure of what I actually want to build,
+but I know that the dapp I create will need to create canisters.
+So today my goal is to figure out how to create a canister from my dapp.
+
+I am open to creating canisters either directly from my dapp's canister or through the frontend using the RPC interface.
+I just need to figure out how to programmatically create canisters.
+
+Where is the motoko base library documentation?
+
+The link to the motoko reference documentation goes to a [blank page] dead end,
+but the docs do exist here:
+
+> https://smartcontracts.org/docs/current/references/motoko-ref/array
+
+[blank page]: https://smartcontracts.org/docs/current/references/motoko-ref/
+
+There's just no navigable entrypoint for them.
+The above link instead goes to the docs for `Array`.
+
+The base library is mostly data types,
+so probably you don't create a new canister by calling a syscall.
+There is an [`ExperimentalInternetComputer`] ... type, I think,
+for calling other canisters.
+
+[`ExperimentalInternetComputer`]: https://smartcontracts.org/docs/current/references/motoko-ref/experimentalinternetcomputer
+
+So probably I would need to call some system canister to create a canister.
+I find the a description of the [IC syscalls][icsys],
+and there's nothing there about creating canisters.
+
+[icsys]: https://smartcontracts.org/docs/current/references/ic-interface-spec/#system-api-imports
+
+There is an [IC management canister][icmc].
+It looks like a canister but is not implemented as a canister.
+It's like a system system canister.
+
+[icmc]: https://smartcontracts.org/docs/current/references/ic-interface-spec/#ic-management-canister
+
+Maybe that's what I need.
+Yeah, everything for creating and managing canisters is here.
