@@ -511,3 +511,40 @@ Yeah, everything for creating and managing canisters is here.
 
 I spend about 30 minutes unable to redeploy the `internet_identity` canister
 until I delete `internet_identity/.dfx`.
+
+
+## Sketching a wiki page canister (2022/05/24)
+
+We've decided to try to create a wiki.
+There are going to be at least three canisters:
+
+- `page_backend` - a single page in the wiki
+- `wiki_backend` - a controller for the entire wiki, to create and lookup pages
+- `wiki_frontend` - the website, an SPA
+
+If we succeed at those we will probably also make two more:
+
+- `wiki_factory_backend` - a service that creates wikis
+- `wiki_factory_frontend` - the frontend to the wiki creation service
+
+The idea is to be a "Permissionless Wikia".
+
+We've started by restructuring the example project to have the three above canisters,
+and outlining the `page_backend` actor:
+
+```
+import Principal "mo:base/Principal";
+import Error "mo:base/Error";
+
+actor {
+    public query func getFullPageMarkup() : async Text {
+        throw Error.reject("poop");
+    };
+
+    public func setFullPageMarkup(text: Text) {
+        throw Error.reject("poop");
+    }
+};
+```
+
+That should be good enough for a first prototype.

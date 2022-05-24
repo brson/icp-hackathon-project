@@ -1,7 +1,12 @@
 import Principal "mo:base/Principal";
+import Error "mo:base/Error";
 
 actor {
-    public shared query (msg) func whoami() : async Principal {
-        return msg.caller;
+    public query func getFullPageMarkup() : async Text {
+        throw Error.reject("poop");
     };
+
+    public func setFullPageMarkup(text: Text) {
+        throw Error.reject("poop");
+    }
 };
