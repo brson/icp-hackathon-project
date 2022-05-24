@@ -2,7 +2,7 @@ import Principal "mo:base/Principal";
 import Error "mo:base/Error";
 
 actor {
-    var pageContent : Text = "";
+    var pageContent : Text = "New page.";
     
     public query func getFullPageMarkup() : async Text {
         return pageContent;
@@ -10,5 +10,5 @@ actor {
 
     public func setFullPageMarkup(text: Text) {
         pageContent := text;
-    }    
+    };
 };
