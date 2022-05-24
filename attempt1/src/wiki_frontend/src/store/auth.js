@@ -1,18 +1,18 @@
 import { writable } from "svelte/store";
-import { idlFactory } from "../../../declarations/backend/backend.did.js";
+import { idlFactory } from "../../../declarations/wiki_backend/wiki_backend.did.js";
 import { Actor, HttpAgent } from "@dfinity/agent";
 
 /**
  * Creates an actor for the Backend canister
  *
  * @param {{agentOptions: import("@dfinity/agent").HttpAgentOptions, actorOptions: import("@dfinity/agent").ActorConfig}} options
- * @returns {import("@dfinity/agent").ActorSubclass<import("../../../declarations/backend/backend.did")._SERVICE>}
+ * @returns {import("@dfinity/agent").ActorSubclass<import("../../../declarations/wiki_backend/wiki_backend.did")._SERVICE>}
  */
 export function createActor(options) {
   const hostOptions = {
     host:
       process.env.DFX_NETWORK === "ic"
-        ? `https://${process.env.BACKEND_CANISTER_ID}.ic0.app`
+        ? `https://${process.env.WIKI_BACKEND_CANISTER_ID}.ic0.app`
         : "http://localhost:8000",
   };
   if (!options) {
@@ -40,7 +40,7 @@ export function createActor(options) {
   // Creates an actor with using the candid interface and the HttpAgent
   return Actor.createActor(idlFactory, {
     agent,
-    canisterId: process.env.BACKEND_CANISTER_ID,
+    canisterId: process.env.WIKI_BACKEND_CANISTER_ID,
     ...options?.actorOptions,
   });
 }

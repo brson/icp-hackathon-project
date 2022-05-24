@@ -508,3 +508,6 @@ It's like a system system canister.
 
 Maybe that's what I need.
 Yeah, everything for creating and managing canisters is here.
+
+I spend about 30 minutes unable to redeploy the `internet_identity` canister
+until I delete `internet_identity/.dfx`.

@@ -1,34 +1,39 @@
 {
-  "canisters": {
-    "backend": {
-      "main": "src/backend/main.mo",
-      "type": "motoko"
+    "canisters": {
+        "wiki_backend": {
+            "main": "src/wiki_backend/main.mo",
+            "type": "motoko"
+        },
+        "page_backend": {
+            "main": "src/page_backend/main.mo",
+            "type": "motoko"
+        },
+        "wiki_frontend": {
+            "dependencies": [
+                "wiki_backend",
+                "page_backend"
+            ],
+            "frontend": {
+                "entrypoint": "src/wiki_frontend/public/index.html"
+            },
+            "source": [
+                "src/wiki_frontend/public"
+            ],
+            "type": "assets"
+        }
     },
-    "frontend": {
-      "dependencies": [
-        "backend"
-      ],
-      "frontend": {
-        "entrypoint": "src/frontend/public/index.html"
-      },
-      "source": [
-        "src/frontend/public"
-      ],
-      "type": "assets"
-    }
-  },
-  "defaults": {
-    "build": {
-      "args": "",
-      "packtool": ""
-    }
-  },
-  "dfx": "0.10.0",
-  "networks": {
-    "local": {
-      "bind": "127.0.0.1:8000",
-      "type": "ephemeral"
-    }
-  },
-  "version": 1
+    "defaults": {
+        "build": {
+            "args": "",
+            "packtool": ""
+        }
+    },
+    "dfx": "0.10.0",
+    "networks": {
+        "local": {
+            "bind": "127.0.0.1:8000",
+            "type": "ephemeral"
+        }
+    },
+    "version": 1
 }
