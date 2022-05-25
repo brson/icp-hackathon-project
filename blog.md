@@ -548,3 +548,69 @@ actor {
 ```
 
 That should be good enough for a first prototype.
+I give that to Aimee to fill in while I hack on the frontend.
+She comes back later with this:
+
+```
+import Principal "mo:base/Principal";
+
+actor {
+    var pageContent : Text = "New page.";
+    
+    public query func getFullPageMarkup() : async Text {
+        return pageContent;
+    };
+
+    public func setFullPageMarkup(text: Text) {
+        pageContent := text;
+    };
+};
+```
+
+With IC's Candid interface specification and auto-generated UIs
+we can test it without a frontend. This is pretty great.
+
+This seems good enough for basic testing.
+Now I outline the `wiki_backend` canister:
+
+```
+import Principal "mo:base/Principal";
+import Error "mo:base/Error";
+
+actor {
+    public func initialize() : async Bool {
+        // if already initialized, return false
+        // todo create index page
+        // use the ic management canister:
+        // https://smartcontracts.org/docs/current/references/ic-interface-spec/#ic-management-canister
+        // todo return true
+        throw Error.reject("poop");
+    };
+
+    public query func getIndexPagePrincipal() : async ?Principal {
+        // todo if index page has been created, return it,
+        // otherwise null.
+        throw Error.reject("poop");
+    };
+
+    public query func getPagePrincipal(name: Text) : async ?Principal {
+        throw Error.reject("poop");
+    };
+
+    // Returns a new Principal on success, null otherwise.
+    public query func createPage(name: Text) : async ?Principal {
+        // todo if exists return the existing principal
+        // if not exists create a new principal and store in hash map
+        throw Error.reject("poop");
+    };
+};
+```
+
+This one is going to be a lot harder to implement
+since it requires creating a new canister dynamically.
+I know it will involve calling the [IC management canister][icmc],
+but that's about all I know.
+I give that to Aimee to chew on for a while and continue hacking on
+the frontend and learning Svelte.
+
+[icmc]: https://smartcontracts.org/docs/current/references/ic-interface-spec/#ic-management-canister
