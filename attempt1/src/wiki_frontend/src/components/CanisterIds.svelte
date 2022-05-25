@@ -1,9 +1,9 @@
-<section>
+<div>
   <p>Page backend canister ID: {PAGE_BACKEND_CANISTER_ID}</p>
   <p>Wiki backend canister ID: {WIKI_BACKEND_CANISTER_ID}</p>
   <p>Wiki rontend canister ID: {WIKI_FRONTEND_CANISTER_ID}</p>
   <p>Internet Identity canister ID: {INTERNET_IDENTITY_CANISTER_ID}</p>
-</section>
+</div>
 
 <script>
   export const PAGE_BACKEND_CANISTER_ID = process.env.PAGE_BACKEND_CANISTER_ID;

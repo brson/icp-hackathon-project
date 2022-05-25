@@ -1,1 +1,7 @@
-/* todo */
+* {
+}
+
+body {
+    margin: auto;
+    max-width: 80ch;
+}

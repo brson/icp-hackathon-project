@@ -1,18 +1,26 @@
 <script>
   import Auth from "./components/Auth.svelte";
   import CanisterIds from "./components/CanisterIds.svelte";
-  
+  import LoadingView from "./components/LoadingView.svelte";
 </script>
 
 <main>
-  <h1>Your Forever Wiki</h1>
+  <section>
+    <h1>Your Forever Wiki</h1>
+  </section>
 
-  <div id="main-view">
-    <!--<ArticleView id="article-view"/>-->
-  </div>
+  <section id="main-view">
+    <LoadingView />
+    <!--<ArticleView id="page-view"/>-->
+  </section>
 
-  <CanisterIds />
+  <section>
+    <CanisterIds />
+  </section>
 </main>
 
 <style>
+  section {
+    padding: 2rem 2rem 0rem 2rem;
+  }
 </style>
