@@ -672,7 +672,7 @@ mostly by copying the `auth.js` file from the IC svelte template.
   {#await articleMarkupPromise}
     Loading article markup...
   {:then articleMarkup}
-    <ArticleView {articleMarkup} />
+    <ArticleDisplay {articleMarkup} />
   {/await}
 </div>
 ```

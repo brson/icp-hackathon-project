@@ -45,6 +45,6 @@
   {#await articleMarkupPromise}
     Loading article markup...
   {:then articleMarkup}
-    <ArticleView {articleMarkup} />
+    <ArticleDisplay {articleMarkup} />
   {/await}
 </div>
