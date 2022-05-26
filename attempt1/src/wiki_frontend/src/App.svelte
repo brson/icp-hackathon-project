@@ -1,7 +1,9 @@
 <script>
   import Auth from "./components/Auth.svelte";
   import CanisterIds from "./components/CanisterIds.svelte";
-  import LoadingView from "./components/LoadingView.svelte";
+  import Article from "./components/Article.svelte";
+
+  import * as canisterIds from "./store/canisterIds";
 </script>
 
 <main>
@@ -9,9 +11,8 @@
     <h1>Your Forever Wiki</h1>
   </section>
 
-  <section id="main-view">
-    <LoadingView />
-    <!--<ArticleView id="page-view"/>-->
+  <section>
+    <Article articleName="index" />
   </section>
 
   <section>
