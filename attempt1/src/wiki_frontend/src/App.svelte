@@ -4,6 +4,9 @@
   import Article from "./components/Article.svelte";
 
   import * as canisterIds from "./store/canisterIds";
+
+  console.log(`loaded ${new Date().getTime()}`);
+  setTimeout(() => console.log("."), 5000);
 </script>
 
 <main>

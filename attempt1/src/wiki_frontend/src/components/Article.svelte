@@ -1,4 +1,5 @@
 <script>
+
   // The name of the article.
   // We will look up the article's canister in the wiki
   // and load its markup from there.
@@ -6,12 +7,15 @@
 
   import Loading from "./Loading.svelte";
   import ArticleDisplay from "./ArticleDisplay.svelte";
+  import ArticleEdit from "./ArticleEdit.svelte";
 
   import { Actor, HttpAgent } from "@dfinity/agent";
 
   import * as PageBackendDid from "../../../declarations/page_backend/page_backend.did.js";
 
   let loaded = false;
+  let editing = false;
+  let articleEditComponent;
 
   let icHost = "http://localhost:8000"; // todo
   let agentOptions = {
@@ -39,12 +43,56 @@
 
   let articleMarkupPromise = articleActor.getFullPageMarkup();
 
+  function onEditButtonClick() {
+    editing = true;
+  }
+
+  async function onSaveButtonClick() {
+    console.assert(articleEditComponent);
+    const newMarkup = articleEditComponent.getMarkup();
+    console.log(newMarkup);
+    articleMarkupPromise = Promise.resolve(newMarkup);
+    editing = false;
+
+    await saveMarkup(newMarkup);
+  }
+
+  function onCancelButtonClick() {
+    editing = false;
+  }
+
+  async function saveMarkup(markup) {
+    await articleActor.setFullPageMarkup(markup);
+    console.log("saved");
+  }
+
 </script>
 
-<div id="article-container">
+<div>
   {#await articleMarkupPromise}
     Loading article markup...
   {:then articleMarkup}
-    <ArticleView {articleMarkup} />
+    {#if !editing}
+      <div>
+        <button type="button" on:click={onEditButtonClick}>
+          Edit
+        </button>
+      </div>
+      <div>
+        <ArticleDisplay {articleMarkup} />
+      </div>
+    {:else}
+      <div>
+        <button type="button" on:click={onSaveButtonClick}>
+          Save
+        </button>
+        <button type="button" on:click={onCancelButtonClick}>
+          Cancel
+        </button>
+      </div>
+      <div>
+        <ArticleEdit {articleMarkup} bind:this={articleEditComponent}/>
+      </div>
+    {/if}
   {/await}
 </div>
