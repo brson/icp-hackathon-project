@@ -624,7 +624,7 @@ Today I managed to write an `Article.svelte` component
 that successfully loads the markup from the article canister (previously the "page" canister),
 mostly by copying the `auth.js` file from the IC svelte template.
 
-```
+```html
 <script>
   // The name of the article.
   // We will look up the article's canister in the wiki
@@ -676,3 +676,64 @@ mostly by copying the `auth.js` file from the IC svelte template.
   {/await}
 </div>
 ```
+
+I spent too long trying to get MediaWiki's markup
+working in `ArticleDisplay`, failed to get either
+of the JavaScript implementations building
+in my environment,
+decided it was just too complex,
+and this wiki can use [CommonMark].
+The [JavaScript implementation][cmjs]
+built without problems and has a simple interface.
+
+[CommonMark]: https://commonmark.org/
+[cmjs]: https://github.com/commonmark/commonmark.js
+
+My CommonMark `ArticleDisplay` svelte component in its entirety:
+
+```html
+<script>
+  export let articleMarkup;
+
+  import * as commonmark from "commonmark";
+
+  let parser = new commonmark.Parser();
+  let writer = new commonmark.HtmlRenderer({
+    safe: true
+  });
+  let parsed = parser.parse(articleMarkup);
+  let rendered = writer.render(parsed);
+</script>
+
+<div>
+  {@html rendered}
+</div>
+```
+
+Pretty fun.
+I'm liking svelte a lot.
+Web frontend programming is sometimes fun these days.
+
+
+## Making the wiki work round-trip (2022/05/27)
+
+I'm kinding liking ICP too.
+
+So far the actor-orientation is intuitive,
+and though Aimee is doing most of the Motoko programming,
+as a relative novice she is having a lot of success.
+She almost has the `wiki_backend` creating new pages.
+
+In the meantime I am still working on the page-editing frontend components.
+
+I added an `ArticleEdit` svelte component,
+and added [CodeMirror 6] to it for editing
+the wiki markup.
+I originally tried using [Monaco],
+but it was difficult to get to build correctly
+with `rollup`,
+and the build took a long time.
+
+[CodeMirror 6]: https://codemirror.net/6/docs/guide/
+[Monaco]: https://microsoft.github.io/monaco-editor/
+

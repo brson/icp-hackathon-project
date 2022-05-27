@@ -15,6 +15,7 @@
 
   let loaded = false;
   let editing = false;
+  let articleEditComponent;
 
   let icHost = "http://localhost:8000"; // todo
   let agentOptions = {
@@ -46,12 +47,23 @@
     editing = true;
   }
 
-  function onSaveButtonClick() {
+  async function onSaveButtonClick() {
+    console.assert(articleEditComponent);
+    const newMarkup = articleEditComponent.getMarkup();
+    console.log(newMarkup);
+    articleMarkupPromise = Promise.resolve(newMarkup);
     editing = false;
+
+    await saveMarkup(newMarkup);
   }
 
   function onCancelButtonClick() {
     editing = false;
+  }
+
+  async function saveMarkup(markup) {
+    await articleActor.setFullPageMarkup(markup);
+    console.log("saved");
   }
 
 </script>
@@ -79,7 +91,7 @@
         </button>
       </div>
       <div>
-        <ArticleEdit {articleMarkup} />
+        <ArticleEdit {articleMarkup} bind:this={articleEditComponent}/>
       </div>
     {/if}
   {/await}
