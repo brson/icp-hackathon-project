@@ -6,7 +6,6 @@ import Nat "mo:base/Nat";
 import HashMap "mo:base/HashMap";
 import Text "mo:base/Text";
 
-
 actor {
     let IC =
         actor "aaaaa-aa" : actor {
@@ -22,9 +21,9 @@ actor {
         // https://smartcontracts.org/docs/current/references/ic-interface-spec/#ic-management-canister
         // todo return true
 
-       if (Nat.greater(pageIndex.size(), 0)) {
-           return false;
-       } else {            
+        if (Nat.greater(pageIndex.size(), 0)) {
+            return false;
+        } else {
             pageIndex := HashMap.HashMap<Text, Principal>(0, Text.equal, Text.hash);
             return true;
         };
