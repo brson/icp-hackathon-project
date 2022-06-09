@@ -737,3 +737,22 @@ and the build took a long time.
 [CodeMirror 6]: https://codemirror.net/6/docs/guide/
 [Monaco]: https://microsoft.github.io/monaco-editor/
 
+
+## Prettifying the UI (2022/06/09)
+
+We took a big break from the ICP hackathon,
+because the Polkadot hackathon started.
+We also have real work todo on occassion,
+so suddenly we are too busy.
+
+Our goal for the hackathon now is to get the basic wiki
+functionality working in the contracts: create and edit pages;
+and to create a pretty UI to drive it.
+Use the wiki itself to present the wiki at the end of the hackathon.
+
+Ideally we would have a "wiki factory" too for making new wikis,
+but I have a feeling we won't get that far.
+Just figuring out how to create new page canisters is going to be a challenge.
+
+The UI can already edit pages,
+so today my task is to focus on making it look good.
