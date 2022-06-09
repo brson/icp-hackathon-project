@@ -1,4 +1,5 @@
 <script>
+  export let articleName;
   export let articleMarkup;
 
   import {EditorState} from "@codemirror/state";
@@ -28,7 +29,10 @@
 
 </script>
 
-<div bind:this={editorContainer}>
+<section>
+  <header>
+    <h1>{articleName}</h1>
+  </header>
 
-</div>
-
+  <div bind:this={editorContainer}></div>
+</section>

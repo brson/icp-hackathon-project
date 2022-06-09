@@ -68,6 +68,8 @@
 
 </script>
 
+
+
 <div id="container">
 
   {#await articleMarkupPromise}
@@ -81,15 +83,10 @@
         Edit
       </button>
     </li>
-    <li>
-      <button type="button" on:click={onEditButtonClick}>
-        Edit
-      </button>
-    </li>
   </menu>
 
   <div>
-    <ArticleDisplay {articleMarkup} />
+    <ArticleDisplay {articleName} {articleMarkup} />
   </div>
 
     {:else}
@@ -108,7 +105,7 @@
   </menu>
 
   <div>
-    <ArticleEdit {articleMarkup} bind:this={articleEditComponent}/>
+    <ArticleEdit {articleName} {articleMarkup} bind:this={articleEditComponent}/>
   </div>
 
     {/if}

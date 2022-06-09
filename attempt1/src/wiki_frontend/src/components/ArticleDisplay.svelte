@@ -1,4 +1,5 @@
 <script>
+  export let articleName;
   export let articleMarkup;
 
   import * as commonmark from "commonmark";
@@ -12,6 +13,12 @@
 </script>
 
 <article>
-  {@html rendered}
+  <header>
+    <h1>{articleName}</h1>
+  </header>
+
+  <div>
+    {@html rendered}
+  </div>
 </article>
 
