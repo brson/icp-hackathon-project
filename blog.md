@@ -10,11 +10,23 @@ ICP's architecture. Some things we think ICP should be good at:
 - Authentication - ICP has a unique Web Authentication-based identity system.
 - Single page applications - the project's we have seen so far appear to be SPAs.
 
-Some porject ideas:
+Some project ideas:
 
 - A wiki.
 - A deck-based social media game, Pokemon x Tinder.
 - Something like keybase.
+
+## Things we learned
+
+todo
+
+- If the internet-identity caninster won't deploy with
+
+  > Error: The Replica returned an error: code 5, message: "Canister rwlgt-iiaaa-aaaaa-aaaaa-cai trapped explicitly: stable memory header: invalid magic: [68, 73, 68]"
+
+  then deleting `.dfx` and trying again will work.
+
+
 
 ## Getting started (2022/05/10)
 

@@ -3,6 +3,10 @@ TODO
 # Useful commands
 
 ```
+cargo install ic-cdk-optimizer
+```
+
+```
 pushd attempt1/internet-identity
 `II_FETCH_ROOT_KEY=1 II_DUMMY_CAPTCHA=1 II_DUMMY_AUTH=1 dfx deploy --no-wallet --argument '(null)'`
 popd
