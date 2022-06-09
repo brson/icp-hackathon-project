@@ -10,7 +10,9 @@
 
 <main>
   <section>
-    <h1>Your Forever Wiki</h1>
+    <header>
+      <h1>Your Forever Wiki</h1>
+    </header>
   </section>
 
   <section>
@@ -19,14 +21,6 @@
 </main>
 
 <style>
-  /*section {
-    padding: var(--base-margin-size) var(--base-margin-size) 0rem var(--base-margin-size);
-  }
-
-  section:last-of-type {
-    padding: var(--base-margin-size);
-  }*/
-  
   main {
     color: var(--ink-color);
     background-color: var(--paper-color);

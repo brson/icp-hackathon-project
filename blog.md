@@ -768,3 +768,40 @@ Just figuring out how to create new page canisters is going to be a challenge.
 
 The UI can already edit pages,
 so today my task is to focus on making it look good.
+
+When I deploy internet-identity to my devnet lately I see an error
+from `ic-cdk-optimizer` about an unexpected "frontend" argument:
+
+```
+$ `II_FETCH_ROOT_KEY=1 II_DUMMY_CAPTCHA=1 II_DUMMY_AUTH=1 dfx deploy --argument '(null)'`
+Creating a wallet canister on the local network.
+The wallet canister on the "local" network for user "default" is "rdmx6-jaaaa-aaaaa-aaadq-cai"
+Deploying all canisters.
+All canisters have already been created.
+Building canisters...
+Executing 'src/internet_identity/build.sh'
+    Finished release [optimized] target(s) in 0.07s
+Original:          2.87 MiB
+Stripping Unused Data Segments...
+    Size:          2.06 MiB (28.3% smaller)
+Execute a binaryen optimization pass on your WASM....
+    Size:          1.94 MiB (5.7% smaller)
+
+Final Size: 1.94 MiB (32.3% smaller)
+Installing canisters...
+Deployed canisters.
+URLs:
+  Candid:
+    internet_identity: http://0.0.0.0:8000/?canisterId=rrkah-fqaaa-aaaaa-aaaaq-cai&id=rwlgt-iiaaa-aaaaa-aaaaa-cai
+error: Found argument 'frontend' which wasn't expected, or isn't valid in this context
+
+If you tried to supply `frontend` as a PATTERN use `-- frontend`
+
+USAGE:
+    ic-cdk-optimizer --output <output> [input]
+
+For more information try --help
+```
+
+It doesn't appear to cause the deploy to fail though,
+so for now I am just ignoring it.

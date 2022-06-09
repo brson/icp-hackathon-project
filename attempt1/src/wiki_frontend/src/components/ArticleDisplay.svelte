@@ -11,7 +11,7 @@
   let rendered = writer.render(parsed);
 </script>
 
-<div>
+<article>
   {@html rendered}
-</div>
+</article>
 

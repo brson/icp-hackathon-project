@@ -68,31 +68,63 @@
 
 </script>
 
-<div>
+<div id="container">
+
   {#await articleMarkupPromise}
     Loading article markup...
   {:then articleMarkup}
     {#if !editing}
-      <div>
-        <button type="button" on:click={onEditButtonClick}>
-          Edit
-        </button>
-      </div>
-      <div>
-        <ArticleDisplay {articleMarkup} />
-      </div>
+
+  <menu>
+    <li>
+      <button type="button" on:click={onEditButtonClick}>
+        Edit
+      </button>
+    </li>
+    <li>
+      <button type="button" on:click={onEditButtonClick}>
+        Edit
+      </button>
+    </li>
+  </menu>
+
+  <div>
+    <ArticleDisplay {articleMarkup} />
+  </div>
+
     {:else}
-      <div>
-        <button type="button" on:click={onSaveButtonClick}>
-          Save
-        </button>
-        <button type="button" on:click={onCancelButtonClick}>
-          Cancel
-        </button>
-      </div>
-      <div>
-        <ArticleEdit {articleMarkup} bind:this={articleEditComponent}/>
-      </div>
+
+  <menu>
+    <li>
+      <button type="button" on:click={onSaveButtonClick}>
+        Save
+      </button>
+    </li>
+    <li>
+      <button type="button" on:click={onCancelButtonClick}>
+        Cancel
+      </button>
+    </li>
+  </menu>
+
+  <div>
+    <ArticleEdit {articleMarkup} bind:this={articleEditComponent}/>
+  </div>
+
     {/if}
   {/await}
+
 </div>
+
+<style>
+  #container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--base-margin-size);
+  }
+
+  menu {
+    display: flex;
+    gap: calc(var(--base-margin-size) / 2);
+  }
+</style>

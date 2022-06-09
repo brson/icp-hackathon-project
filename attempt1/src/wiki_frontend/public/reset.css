@@ -22,3 +22,13 @@ input, button, textarea, select {
 p, h1, h2, h3, h4, h5, h6 {
     overflow-wrap: break-word;
 }
+
+menu, ul, ol {
+  list-style: none;
+  margin-block-start: 0;
+  margin-block-end: 0;
+  margin-inline-start: 0;
+  margin-inline-end: 0;
+  padding-inline-start: 0;
+  padding-inline-end: 0;
+}
