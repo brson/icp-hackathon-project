@@ -13,26 +13,32 @@ actor {
         };
 
     var pageIndex = HashMap.HashMap<Text, Principal>(0, Text.equal, Text.hash);
+    var pageIndexCanisterId : ?Principal = null;
 
     public func initialize() : async Bool {
         // if already initialized, return false
-        // todo create index page
         // use the ic management canister:
         // https://smartcontracts.org/docs/current/references/ic-interface-spec/#ic-management-canister
-        // todo return true
 
         if (Nat.greater(pageIndex.size(), 0)) {
             return false;
         } else {
             pageIndex := HashMap.HashMap<Text, Principal>(0, Text.equal, Text.hash);
+
+            Debug.print("balance before creating pageIndex canister: " # Nat.toText(Cycles.balance()));
+
+            Cycles.add(Cycles.balance()/2);
+
+            let newPageIndexCanister = await IC.create_canister({});
+            pageIndexCanisterId := ?newPageIndexCanister.canister_id;
+            Debug.print("balance after creating pageIndex canister: " # Nat.toText(Cycles.balance()));
+            
             return true;
         };
     };
 
     public query func getIndexPagePrincipal() : async ?Principal {
-        // todo if index page has been created, return it,
-        // otherwise null.
-        throw Error.reject("poop getIndex");
+        return pageIndexCanisterId;
     };
 
     public query func getPagePrincipal(name: Text) : async ?Principal {
