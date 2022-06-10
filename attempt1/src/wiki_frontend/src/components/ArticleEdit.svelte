@@ -17,7 +17,10 @@
 
     editorView = new EditorView({
       state: startState,
-      parent: editorContainer
+      parent: editorContainer,
+      extensions: EditorView.theme({
+        "&.cm-editor.cm-focused": { "outline-width": "0px" }
+      })
     })
   }
 
@@ -34,6 +37,8 @@
 
 <style>
   #container {
-    border: 1px solid var(--ink-color);
+    outline: var(--ink-color) solid var(--outline-size);
+    border-radius: var(--border-radius);
+    border: 2px solid rgba(0, 0, 0, 0);
   }
 </style>
