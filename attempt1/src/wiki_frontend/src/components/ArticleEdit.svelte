@@ -28,4 +28,12 @@
 
 </script>
 
-<div bind:this={editorContainer}></div>
+<div id="container">
+  <div bind:this={editorContainer}></div>
+</div>
+
+<style>
+  #container {
+    border: 1px solid var(--ink-color);
+  }
+</style>

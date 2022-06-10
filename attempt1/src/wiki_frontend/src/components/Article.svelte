@@ -103,7 +103,7 @@
   </menu>
 
   <div>
-    <ArticleEdit {articleName} bind:this={articleEditComponent}/>
+    <ArticleEdit {articleMarkup} bind:this={articleEditComponent}/>
   </div>
 
     {/if}
