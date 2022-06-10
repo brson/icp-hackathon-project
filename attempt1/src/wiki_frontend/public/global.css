@@ -22,10 +22,10 @@ body {
 }
 
 body {
-  font-family: "Tahoma", "Verdana", "Trebuchet MS", "Arial", sans-serif;
+  font-family: georgia, "times new roman", times, serif;
   font-size: 14pt;
   font-weight: normal;
-  line-height: 1.6;
+  line-height: 1.5;
 }
 
 button {
