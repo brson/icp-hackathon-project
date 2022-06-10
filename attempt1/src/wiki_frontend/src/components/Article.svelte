@@ -68,8 +68,6 @@
 
 </script>
 
-
-
 <div id="container">
 
   {#await articleMarkupPromise}
@@ -85,9 +83,9 @@
     </li>
   </menu>
 
-  <div>
-    <ArticleDisplay {articleName} {articleMarkup} />
-  </div>
+  <article>
+    <ArticleDisplay {articleMarkup} />
+  </article>
 
     {:else}
 
@@ -105,7 +103,7 @@
   </menu>
 
   <div>
-    <ArticleEdit {articleName} {articleMarkup} bind:this={articleEditComponent}/>
+    <ArticleEdit {articleName} bind:this={articleEditComponent}/>
   </div>
 
     {/if}
@@ -122,6 +120,7 @@
 
   menu {
     display: flex;
+    justify-content: flex-end;
     gap: calc(var(--base-margin-size) / 2);
   }
 </style>

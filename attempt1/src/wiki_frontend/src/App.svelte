@@ -9,15 +9,7 @@
 </script>
 
 <main>
-  <section>
-    <header>
-      <h1>Your Forever Wiki</h1>
-    </header>
-  </section>
-
-  <section>
-    <Article articleName="index" />
-  </section>
+  <Article articleName="index" />
 </main>
 
 <style>
@@ -28,9 +20,6 @@
   }
 
   main {
-    display: flex;
-    flex-direction: column;
-    gap: var(--base-margin-size);
     padding: var(--base-margin-size);
   }
 
