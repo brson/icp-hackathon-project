@@ -4,12 +4,34 @@
 
   import * as canisterIds from "./store/canisterIds";
 
+  let url = document.location.href;
+
+  $: {
+    console.log(url);
+  };
+
+  function parseUrl() {
+    // todo
+  }
+
+  let articleName = "index";
+
   console.log(`loaded ${new Date().getTime()}`);
   setTimeout(() => console.log("."), 5000);
+
+  function navigate(newUrl) {
+    document.location.assign(newUrl);
+    url = document.location.href;
+  }
+
+  function onLoadHistory() {
+    console.log("load history");
+    navigate("#/{articleName}?history");
+  }
 </script>
 
 <main>
-  <Article articleName="index" />
+  <Article {articleName} on:loadHistory={onLoadHistory} />
 </main>
 
 <style>
