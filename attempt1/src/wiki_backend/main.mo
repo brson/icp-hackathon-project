@@ -6,36 +6,11 @@ import Nat "mo:base/Nat";
 import HashMap "mo:base/HashMap";
 import Text "mo:base/Text";
 import Array "mo:base/Array";
-
-// Subset of IC management canister interface required for our use
-module ManagementCanister = {
-    public type wasm_module = Blob;
-    public type canister_settings = {
-        controller : ?[var Principal];
-        compute_allocation: ?Nat;
-        memory_allocation: ?Nat;
-        freezing_threshold: ?Nat;
-    };
-};
+import Iter "mo:base/Iter";
+import IC "ic:aaaaa-aa";
 
 actor Self {
-    let IC = actor "aaaaa-aa" : actor {
-        create_canister : {
-            settings : ?ManagementCanister.canister_settings
-        } -> async { canister_id : Principal };
-
-        install_code : {
-            mode : { #install; #reinstall; #upgrade };
-            canister_id : Principal;
-            wasm_module : ManagementCanister.wasm_module;
-            arg : Blob;
-        } -> async ();
-        
-        canister_status : { canister_id : Principal } -> async {
-            settings : ?ManagementCanister.canister_settings
-        };
-    };
-
+    // todo: make it stable & HashMap -> TrieMap
     var pageIndex = HashMap.HashMap<Text, Principal>(0, Text.equal, Text.hash);
     var pageIndexCanisterId : ?Principal = null;
 
@@ -79,27 +54,21 @@ actor Self {
             case (?_) { throw Error.reject("page already exist"); };
         };
 
-        let currentPrincipal = Principal.fromActor(Self);
-        let newPageCanisterControllers : [var Principal] = [var currentPrincipal];
-
+        let selfPrincipal = Principal.fromActor(Self);
+        Debug.print("selfPrincipal: " # Principal.toText(selfPrincipal));
+        
         Debug.print("balance before: " # Nat.toText(Cycles.balance()));
         Cycles.add(Cycles.balance()/2);
-        let newPageCanister = await IC.create_canister({ settings = ?newPageCanisterControllers});
+
+        let newPageCanister = await IC.create_canister({ settings = null });
         Debug.print("balance after: " # Nat.toText(Cycles.balance()));
 
         let status = await IC.canister_status(newPageCanister);
-        let status_settings = status.settings;
-        switch(status_settings) {
-            case null {};
-            case (?settings) {
-                switch(settings) {
-                    case null {};
-                    case (?controllerPrincipal) {
-                        Debug.print("settings: " # Principal.toText(controllerPrincipal[0]));
-                    }
-                }
-//                Debug.print("settings: " # Principal.toText(ccc));
-            }
+        let settings = status.settings;
+        let controllers = settings.controllers;
+
+        for (c in Iter.fromArray(controllers)) {
+            Debug.print("settings: " # Principal.toText(c));
         };
 
         pageIndex.put(name, newPageCanister.canister_id);
