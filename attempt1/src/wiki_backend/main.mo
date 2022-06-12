@@ -1,3 +1,4 @@
+import Blob "mo:base/Blob";
 import Principal "mo:base/Principal";
 import Error "mo:base/Error";
 import Cycles "mo:base/ExperimentalCycles";
@@ -7,7 +8,9 @@ import HashMap "mo:base/HashMap";
 import Text "mo:base/Text";
 import Array "mo:base/Array";
 import Iter "mo:base/Iter";
+import Result "mo:base/Result";
 import IC "ic:aaaaa-aa";
+// import P "Prelude";
 
 actor Self {
     // todo: make it stable & HashMap -> TrieMap
@@ -67,10 +70,21 @@ actor Self {
         let status = await IC.canister_status(newPageCanister);
         let controllers = status.settings.controllers;
         for (controller in Iter.fromArray(controllers)) {
-            Debug.print("settings: " # Principal.toText(controller));
+            Debug.print("controller in settings: " # Principal.toText(controller));
         };
 
         // todo: install wasm blob to the new canister
+        let wasmModuleBlob = Principal.toBlob(selfPrincipal);
+        let argBlob = Blob.fromArray([1, 2, 3]);
+        let installCodeResult = await IC.install_code({
+            mode = #install;
+            canister_id = newPageCanister.canister_id;
+            wasm_module = wasmModuleBlob;
+            arg = argBlob;
+        });
+        let newStatus = await IC.canister_status(newPageCanister);
+        Debug.print("new status memory_size: " # Nat.toText(newStatus.memory_size));
+        Debug.print("new status cycles: " # Nat.toText(newStatus.memory_size));
         
         pageIndex.put(name, newPageCanister.canister_id);
 
