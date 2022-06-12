@@ -805,3 +805,21 @@ For more information try --help
 
 It doesn't appear to cause the deploy to fail though,
 so for now I am just ignoring it.
+
+
+## Hacking on the page UI and history (2022/06/10)
+
+After making a nice simple UI that can display and edit wiki articles,
+I am waiting for Aimee to figure out how to install wasm into a new canister,
+so that I can create new pages.
+
+In the meantime I have begun trying to add edit history to the `page_canister`.
+
+I have started to see this error in my web console:
+
+```
+Error: Fail to verify certificate
+```
+
+I don't know whaat it means, and the canister call that is throwing the
+exception seems to complete correctly.

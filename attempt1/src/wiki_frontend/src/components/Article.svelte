@@ -5,6 +5,8 @@
   // and load its markup from there.
   export let articleName;
 
+  import { createEventDispatcher } from 'svelte';
+
   import Loading from "./Loading.svelte";
   import ArticleDisplay from "./ArticleDisplay.svelte";
   import ArticleEdit from "./ArticleEdit.svelte";
@@ -12,6 +14,8 @@
   import { Actor, HttpAgent } from "@dfinity/agent";
 
   import * as PageBackendDid from "../../../declarations/page_backend/page_backend.did.js";
+
+  const dispatch = createEventDispatcher();
 
   let loaded = false;
   let editing = false;
@@ -66,6 +70,10 @@
     console.log("saved");
   }
 
+  function onHistoryButtonClick() {
+    dispatch("loadHistory", {});
+  }
+
 </script>
 
 <div id="container">
@@ -76,6 +84,11 @@
     {#if !editing}
 
   <menu>
+    <li>
+      <button type="button" on:click={onHistoryButtonClick}>
+        History
+      </button>
+    </li>
     <li>
       <button type="button" on:click={onEditButtonClick}>
         Edit
