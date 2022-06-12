@@ -63,14 +63,15 @@ actor Self {
         let newPageCanister = await IC.create_canister({ settings = null });
         Debug.print("balance after: " # Nat.toText(Cycles.balance()));
 
+        // check the new canister's status
         let status = await IC.canister_status(newPageCanister);
-        let settings = status.settings;
-        let controllers = settings.controllers;
-
-        for (c in Iter.fromArray(controllers)) {
-            Debug.print("settings: " # Principal.toText(c));
+        let controllers = status.settings.controllers;
+        for (controller in Iter.fromArray(controllers)) {
+            Debug.print("settings: " # Principal.toText(controller));
         };
 
+        // todo: install wasm blob to the new canister
+        
         pageIndex.put(name, newPageCanister.canister_id);
 
         for ((name, pagePrincipal) in pageIndex.entries()) {
