@@ -10,7 +10,25 @@ import Array "mo:base/Array";
 import Iter "mo:base/Iter";
 import Result "mo:base/Result";
 import IC "ic:aaaaa-aa";
-// import P "Prelude";
+/*
+    // IC is the management canister. We rely on it for the four
+    // fundamental methods as listed below.
+    private let ic00 = actor "aaaaa-aa" : actor {
+      install_code : {
+        mode : { #install; #reinstall; #upgrade };
+        canister_id : Principal;
+        wasm_module : Blob;
+        arg : Blob;
+        compute_allocation : ?Nat;
+        memory_allocation : ?Nat;
+        query_allocation : ?Nat;
+      } -> async ();
+      canister_status : CanisterIdRecord -> async CanisterStatusResult;
+      start_canister : CanisterIdRecord -> async ();
+      stop_canister : CanisterIdRecord -> async ()
+    };
+*/
+
 
 actor Self {
     // todo: make it stable & HashMap -> TrieMap
@@ -72,19 +90,6 @@ actor Self {
         for (controller in Iter.fromArray(controllers)) {
             Debug.print("controller in settings: " # Principal.toText(controller));
         };
-
-        // todo: install wasm blob to the new canister
-        let wasmModuleBlob = Principal.toBlob(selfPrincipal);
-        let argBlob = Blob.fromArray([1, 2, 3]);
-        let installCodeResult = await IC.install_code({
-            mode = #install;
-            canister_id = newPageCanister.canister_id;
-            wasm_module = wasmModuleBlob;
-            arg = argBlob;
-        });
-        let newStatus = await IC.canister_status(newPageCanister);
-        Debug.print("new status memory_size: " # Nat.toText(newStatus.memory_size));
-        Debug.print("new status cycles: " # Nat.toText(newStatus.memory_size));
         
         pageIndex.put(name, newPageCanister.canister_id);
 
@@ -94,4 +99,24 @@ actor Self {
 
         return ?newPageCanister.canister_id;
     };    
+    
+    public func initPage(newPageCanister: Principal, wasmModule: Blob, argBlob: Blob) : async Bool {
+//        let wasmModuleBlob = Principal.toBlob(selfPrincipal);
+//        let argBlob = Blob.fromArray([1, 2, 3]);
+        let installCodeResult = await IC.install_code({
+            mode = #install;
+            canister_id = newPageCanister;
+            wasm_module = wasmModule;
+            arg = argBlob;
+        });
+        // todo: handle the result
+
+        let cid = {canister_id = newPageCanister};
+        let newStatus = await IC.canister_status(cid);
+//        let newStatus = await IC.canister_status(newPageCanister);
+//        Debug.print("new status memory_size: " # Nat.toText(newStatus.memory_size));
+//        Debug.print("new status cycles: " # Nat.toText(newStatus.memory_size));
+
+        return true;
+    }
 };
