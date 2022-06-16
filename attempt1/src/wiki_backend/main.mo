@@ -15,7 +15,8 @@ actor Self {
     // todo: make it stable & HashMap -> TrieMap
     var pageIndex = HashMap.HashMap<Text, Principal>(0, Text.equal, Text.hash);
     var pageIndexCanisterId : ?Principal = null;
-
+    var pageBackendWasmBlob : ?Blob = null;
+    
     public func initialize() : async Bool {
         // if already initialized, return false
         // use the ic management canister:
@@ -47,6 +48,12 @@ actor Self {
         return pageIndex.get(name);
     };
 
+    // for didc to send pageBackend wasm blob for initialization
+    public func initWasmBlob(wasmModuleBlob : Blob) : async Bool {
+        pageBackendWasmBlob := ?wasmModuleBlob;        
+        return true;
+    };
+    
     // Returns a new Principal on success, null otherwise.
     public func createPage(name: Text) : async ?Principal {
         // todo: verify user's input
@@ -75,6 +82,11 @@ actor Self {
         for (controller in Iter.fromArray(controllers)) {
             Debug.print("controller in settings: " # Principal.toText(controller));
         };
+
+        // test blob
+        let wasmModuleBlob : Blob = "\00\61\73\6D\01\00\00\00";
+        let argBlob : Blob = "";
+        await initPage(newPageCanister.canister_id, wasmModuleBlob, argBlob);
         
         pageIndex.put(name, newPageCanister.canister_id);
 
@@ -95,23 +107,16 @@ actor Self {
     ///     memory_allocation: opt nat;
     ///     query_allocation: opt nat;
     /// })`
-//    public func initPage(newPageCanister: Principal, wasmModule: Blob, argBlob: Blob) : async Bool {
-    public func initPage(newPageCanisterText: Text) : async Bool {
-        let newPageCanister = Principal.fromText(newPageCanisterText);
-
+    func initPage(newPageCanister: Principal, wasmModuleBlob: Blob, argBlob: Blob) : async () {
         let cid = {canister_id = newPageCanister};
         let oldStatus = await IC.canister_status(cid);
         Debug.print("status memory_size: " # Nat.toText(oldStatus.memory_size));
         Debug.print("status cycles: " # Nat.toText(oldStatus.memory_size));
 
-
         let selfPrincipal = Principal.fromActor(Self);
         await IC.provisional_top_up_canister({amount = 100_000_000_000_000; canister_id = selfPrincipal});
         Cycles.add(50_000_000_000_000);
 
-        // test blob
-        let wasmModuleBlob : Blob = "\00\61\73\6D\01\00\00\00";
-        let argBlob : Blob = "";
         let installCodeResult = await IC.install_code({
             mode = #install;
             canister_id = newPageCanister;
@@ -123,7 +128,5 @@ actor Self {
         let newStatus = await IC.canister_status(cid);
         Debug.print("new status memory_size: " # Nat.toText(newStatus.memory_size));
         Debug.print("new status cycles: " # Nat.toText(newStatus.memory_size));
-
-        return true;
-    }
+    };
 };
