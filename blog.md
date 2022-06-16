@@ -823,3 +823,34 @@ Error: Fail to verify certificate
 
 I don't know whaat it means, and the canister call that is throwing the
 exception seems to complete correctly.
+
+
+## Trying to figure out how to load a wasm blob into our canister (2022/06/16)
+
+Our wiki_backend canister needs to install the page_backend wasm blob into every page it creates.
+We've spent a lot of days now trying to figure out how to first load the page_backend blob
+into the wiki_backend canister so that it has the wasm to install.
+
+The obvious thing we wanted to do first was use something like Rust's `include_bin!` to just
+include it directly in the code for wiki_backend, but motoko doesn't seem to have such a thing.
+
+Now we are trying to add a `loadPageWasmBlob` method to `wiki_backend` and call it from the comand line with `dfx canister call`.
+We so far don't know how to pass a blob as an argument to `dfx canister call`.
+
+At the moment we are pursuing this process:
+
+- Encode the wasm to hex, probably with the `od` command line tool
+- Call `didc encode` with all the proper arguments, including our hex-encoded blob
+- Call `dfx canister send` to send the raw message
+
+But I am hoping that maybe `dfx` will interpret hex as a blob argument and we can just
+call `dfx canister call loadWasmBlob $HEX_BLOB` or whatever.
+
+I am trying to understand what `dfx` does,
+but so far haven't been able to find the source code to it.
+
+I have asked in the `#s-general` Discord chat room for the hackathon:
+
+```
+where is the source code to the dfx tool? I am trying to understand it better
+```
