@@ -4,6 +4,7 @@ import Error "mo:base/Error";
 import Cycles "mo:base/ExperimentalCycles";
 import Debug "mo:base/Debug";
 import Nat "mo:base/Nat";
+import Nat8 "mo:base/Nat8";
 import HashMap "mo:base/HashMap";
 import Text "mo:base/Text";
 import Array "mo:base/Array";
@@ -50,7 +51,20 @@ actor Self {
 
     // for didc to send pageBackend wasm blob for initialization
     public func initWasmBlob(wasmModuleBlob : Blob) : async Bool {
-        pageBackendWasmBlob := ?wasmModuleBlob;        
+        pageBackendWasmBlob := ?wasmModuleBlob;
+
+        switch(pageBackendWasmBlob) {
+            case null {};
+            case (?pageBackendWasmBlob) {
+                Debug.print("pageBackendWasmBlob: " # Nat.toText(pageBackendWasmBlob.size()));
+
+                let blobIter = pageBackendWasmBlob.vals();
+                for (item in blobIter) {                
+                    Debug.print("blob in text: " # Nat8.toText(item));
+                };
+            };
+        };
+
         return true;
     };
     
@@ -83,10 +97,15 @@ actor Self {
             Debug.print("controller in settings: " # Principal.toText(controller));
         };
 
-        // test blob
-        let wasmModuleBlob : Blob = "\00\61\73\6D\01\00\00\00";
-        let argBlob : Blob = "";
-        await initPage(newPageCanister.canister_id, wasmModuleBlob, argBlob);
+        switch(pageBackendWasmBlob) {
+            case null {
+                // panic
+            };
+            case (?pageBackendWasmBlob) {
+                let argBlob : Blob = "";
+                await initPage(newPageCanister.canister_id, pageBackendWasmBlob, argBlob);
+            };
+        };
         
         pageIndex.put(name, newPageCanister.canister_id);
 
@@ -122,6 +141,7 @@ actor Self {
             canister_id = newPageCanister;
             wasm_module = wasmModuleBlob;
             arg = argBlob;
+//            memory_allocation = ?1073741824; //todo
         });
         // todo: handle the result
 
