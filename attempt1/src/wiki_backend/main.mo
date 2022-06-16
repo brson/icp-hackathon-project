@@ -10,25 +10,6 @@ import Array "mo:base/Array";
 import Iter "mo:base/Iter";
 import Result "mo:base/Result";
 import IC "ic:aaaaa-aa";
-/*
-    // IC is the management canister. We rely on it for the four
-    // fundamental methods as listed below.
-    private let ic00 = actor "aaaaa-aa" : actor {
-      install_code : {
-        mode : { #install; #reinstall; #upgrade };
-        canister_id : Principal;
-        wasm_module : Blob;
-        arg : Blob;
-        compute_allocation : ?Nat;
-        memory_allocation : ?Nat;
-        query_allocation : ?Nat;
-      } -> async ();
-      canister_status : CanisterIdRecord -> async CanisterStatusResult;
-      start_canister : CanisterIdRecord -> async ();
-      stop_canister : CanisterIdRecord -> async ()
-    };
-*/
-
 
 actor Self {
     // todo: make it stable & HashMap -> TrieMap
@@ -77,12 +58,16 @@ actor Self {
 
         let selfPrincipal = Principal.fromActor(Self);
         Debug.print("selfPrincipal: " # Principal.toText(selfPrincipal));
+        Debug.print("balance: " # Nat.toText(Cycles.balance()));
+
+        await IC.provisional_top_up_canister({amount = 100_000_000_000_000; canister_id = selfPrincipal});
+        Debug.print("balance after top_up: " # Nat.toText(Cycles.balance()));
         
-        Debug.print("balance before: " # Nat.toText(Cycles.balance()));
+        Debug.print("balance before creating page: " # Nat.toText(Cycles.balance()));
         Cycles.add(Cycles.balance()/2);
 
         let newPageCanister = await IC.create_canister({ settings = null });
-        Debug.print("balance after: " # Nat.toText(Cycles.balance()));
+        Debug.print("balance after creating page: " # Nat.toText(Cycles.balance()));
 
         // check the new canister's status
         let status = await IC.canister_status(newPageCanister);
@@ -99,23 +84,45 @@ actor Self {
 
         return ?newPageCanister.canister_id;
     };    
-    
-    public func initPage(newPageCanister: Principal, wasmModule: Blob, argBlob: Blob) : async Bool {
-//        let wasmModuleBlob = Principal.toBlob(selfPrincipal);
-//        let argBlob = Blob.fromArray([1, 2, 3]);
+
+    /// Struct used for encoding/decoding
+    /// `(record {
+    ///     mode : variant { install; reinstall; upgrade };
+    ///     canister_id: principal;
+    ///     wasm_module: blob;
+    ///     arg: blob;
+    ///     compute_allocation: opt nat;
+    ///     memory_allocation: opt nat;
+    ///     query_allocation: opt nat;
+    /// })`
+//    public func initPage(newPageCanister: Principal, wasmModule: Blob, argBlob: Blob) : async Bool {
+    public func initPage(newPageCanisterText: Text) : async Bool {
+        let newPageCanister = Principal.fromText(newPageCanisterText);
+
+        let cid = {canister_id = newPageCanister};
+        let oldStatus = await IC.canister_status(cid);
+        Debug.print("status memory_size: " # Nat.toText(oldStatus.memory_size));
+        Debug.print("status cycles: " # Nat.toText(oldStatus.memory_size));
+
+
+        let selfPrincipal = Principal.fromActor(Self);
+        await IC.provisional_top_up_canister({amount = 100_000_000_000_000; canister_id = selfPrincipal});
+        Cycles.add(50_000_000_000_000);
+
+        // test blob
+        let wasmModuleBlob : Blob = "\00\61\73\6D\01\00\00\00";
+        let argBlob : Blob = "";
         let installCodeResult = await IC.install_code({
             mode = #install;
             canister_id = newPageCanister;
-            wasm_module = wasmModule;
+            wasm_module = wasmModuleBlob;
             arg = argBlob;
         });
         // todo: handle the result
 
-        let cid = {canister_id = newPageCanister};
         let newStatus = await IC.canister_status(cid);
-//        let newStatus = await IC.canister_status(newPageCanister);
-//        Debug.print("new status memory_size: " # Nat.toText(newStatus.memory_size));
-//        Debug.print("new status cycles: " # Nat.toText(newStatus.memory_size));
+        Debug.print("new status memory_size: " # Nat.toText(newStatus.memory_size));
+        Debug.print("new status cycles: " # Nat.toText(newStatus.memory_size));
 
         return true;
     }
