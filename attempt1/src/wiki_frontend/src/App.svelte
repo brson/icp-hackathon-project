@@ -7,10 +7,14 @@
 
   let url = document.location.href;
 
-  let {
-    articleName,
-    articleMode,
-  } = pageModes.parseUrl(url);
+  $: mode = pageModes.parseUrl(url);
+  $: articleName = mode.articleName;
+  $: articleMode = mode.articleMode;
+
+  $: {
+    console.log(`articleName: ${articleName}`);
+    console.log(`articleMode: ${articleMode}`);
+  }
 
   console.log(`loaded ${new Date().getTime()}`);
   setTimeout(() => console.log("."), 5000);
