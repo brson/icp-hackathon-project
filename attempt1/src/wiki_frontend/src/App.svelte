@@ -12,7 +12,6 @@
   $: articleMode = mode.articleMode;
 
   $: {
-    let dummy = url;
     console.log(`articleName: ${articleName}`);
     console.log(`articleMode: ${articleMode}`);
   }
