@@ -12,7 +12,8 @@
   $: articleMode = mode.articleMode;
 
   $: {
-    console.log(`articleName: ${articleName}` + articleName);
+    let dummy = url;
+    console.log(`articleName: ${articleName}`);
     console.log(`articleMode: ${articleMode}`);
   }
 
@@ -32,7 +33,7 @@
 
   function onLoadHistory() {
     console.log("load history");
-    navigate("#/{articleName}?history");
+    navigate(`#/${articleName}?history`);
   }
 
 </script>
