@@ -854,3 +854,23 @@ I have asked in the `#s-general` Discord chat room for the hackathon:
 ```
 where is the source code to the dfx tool? I am trying to understand it better
 ```
+
+TedR tells me it is at https://github.com/dfinity/sdk
+
+I feel a bit dumb for not finding it.
+
+
+## Pulling something together for submission (2022/06/19)
+
+It's the last day of the hackathon.
+We don't have much - just a single wiki article that can be updated and displayed.
+In the last few days Aimee spent a bunch of time trying to figure out how to upload
+a WASM blob to the wiki_backend canister, so that it can install that blob
+to the page_backend canister.
+
+We ended up with a shell pipeline that encoded the wasm binary in the specific
+hex encoding candid expects and were able to upload it,
+but so far the blob has been truncated and fails to parse the IC management canister's wasm validator.
+
+Aimee is going to try to figure that out today so we can at least create new pages.
+I am going to work on the UI for creating pages.

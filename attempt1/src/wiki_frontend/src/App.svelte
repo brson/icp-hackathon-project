@@ -3,18 +3,14 @@
   import Article from "./components/Article.svelte";
 
   import * as canisterIds from "./store/canisterIds";
+  import * as pageModes from "./store/pageModes";
 
   let url = document.location.href;
 
-  $: {
-    console.log(url);
-  };
-
-  function parseUrl() {
-    // todo
-  }
-
-  let articleName = "index";
+  let {
+    articleName,
+    articleMode,
+  } = pageModes.parseUrl(url);
 
   console.log(`loaded ${new Date().getTime()}`);
   setTimeout(() => console.log("."), 5000);
