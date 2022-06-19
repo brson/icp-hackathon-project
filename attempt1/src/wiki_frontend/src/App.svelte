@@ -2,8 +2,8 @@
   import Auth from "./components/Auth.svelte";
   import Article from "./components/Article.svelte";
 
-  import * as canisterIds from "./store/canisterIds";
-  import * as pageModes from "./store/pageModes";
+  import * as canisterIds from "./modules/canisterIds";
+  import * as pageModes from "./modules/pageModes";
 
   let url = document.location.href;
 
@@ -12,12 +12,18 @@
   $: articleMode = mode.articleMode;
 
   $: {
-    console.log(`articleName: ${articleName}`);
+    console.log(`articleName: ${articleName}` + articleName);
     console.log(`articleMode: ${articleMode}`);
   }
 
   console.log(`loaded ${new Date().getTime()}`);
   setTimeout(() => console.log("."), 5000);
+
+  // Set up SPA navigation handling.
+
+  window.addEventListener("popstate", () => {
+    url = document.location.href;
+  });
 
   function navigate(newUrl) {
     document.location.assign(newUrl);
@@ -28,6 +34,7 @@
     console.log("load history");
     navigate("#/{articleName}?history");
   }
+
 </script>
 
 <main>
