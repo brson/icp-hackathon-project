@@ -136,14 +136,13 @@ actor Self {
         await IC.provisional_top_up_canister({amount = 100_000_000_000_000; canister_id = selfPrincipal});
         Cycles.add(50_000_000_000_000);
 
+        // todo: handle the result
         let installCodeResult = await IC.install_code({
             mode = #install;
             canister_id = newPageCanister;
             wasm_module = wasmModuleBlob;
             arg = argBlob;
-//            memory_allocation = ?1073741824; //todo
         });
-        // todo: handle the result
 
         let newStatus = await IC.canister_status(cid);
         Debug.print("new status memory_size: " # Nat.toText(newStatus.memory_size));
