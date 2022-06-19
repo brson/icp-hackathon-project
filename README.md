@@ -12,7 +12,7 @@ pushd attempt1/internet-identity
 popd
 ```
 
-``
+```
 pushd attempt1
 dfx deploy
 popd
