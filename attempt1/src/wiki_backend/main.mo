@@ -57,11 +57,6 @@ actor Self {
             case null {};
             case (?pageBackendWasmBlob) {
                 Debug.print("pageBackendWasmBlob: " # Nat.toText(pageBackendWasmBlob.size()));
-
-                let blobIter = pageBackendWasmBlob.vals();
-                for (item in blobIter) {                
-                    Debug.print("blob in text: " # Nat8.toText(item));
-                };
             };
         };
 
@@ -142,6 +137,7 @@ actor Self {
             canister_id = newPageCanister;
             wasm_module = wasmModuleBlob;
             arg = argBlob;
+            memory_allocation = ?1073741824;
         });
 
         let newStatus = await IC.canister_status(cid);
