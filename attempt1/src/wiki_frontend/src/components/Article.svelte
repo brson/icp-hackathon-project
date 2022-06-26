@@ -14,6 +14,7 @@
   import { Actor, HttpAgent } from "@dfinity/agent";
 
   import * as PageBackendDid from "../../../declarations/page_backend/page_backend.did.js";
+  import * as WikiBackendDid from "../../../declarations/wiki_backend/wiki_backend.did.js";
 
   const dispatch = createEventDispatcher();
 
@@ -26,6 +27,51 @@
     host: icHost
   };
 
+  let wikiAgent = new HttpAgent({ ...agentOptions });
+  let wikiCanisterId = process.env.WIKI_BACKEND_CANISTER_ID; // todo
+  let wikiActor = Actor.createActor(WikiBackendDid.idlFactory, {
+    agent: wikiAgent,
+    canisterId: wikiCanisterId,
+  });
+
+  $: articleIdPromise = wikiActor.getPagePrincipal(articleName);
+
+  function isEmptyObject(obj) {
+    return Object.keys(obj).length === 0;
+  }
+  
+  let articleAgent = new HttpAgent({ ...agentOptions });
+
+  let articleActor = null;
+  $: {
+    console.log("loading article id");
+    articleIdPromise.then((articleId) => {
+
+      console.log(articleId);
+      console.log(articleId.toString());
+      console.log(JSON.stringify(articleId));
+      console.log(isEmptyObject(articleId));
+
+      if (isEmptyObject(articleId)) {
+        return;
+      }
+
+      articleActor = Actor.createActor(PageBackendDid.idlFactory, {
+        agent: articleAgent,
+        canisterId: articleId.toString(),
+      });
+    });
+  }
+
+  let articleMarkupPromise = null;
+  $: {
+    console.log("articleActor");
+    if (articleActor) {
+      articleMarkupPromise = articleActor.getFullPageMarkup();
+    }
+  }
+
+/*
   let articleCanisterId = process.env.PAGE_BACKEND_CANISTER_ID; // todo
   let articleAgent = new HttpAgent({ ...agentOptions });
 
@@ -45,7 +91,11 @@
     canisterId: articleCanisterId
   });
 
-  let articleMarkupPromise = articleActor.getFullPageMarkup();
+  let articleMarkupPromise = articleActor.getFullPageMarkup();*/
+
+  async function onCreateArticle() {
+    articleIdPromise = wikiActor.createPage(articleName);
+  }
 
   function onEditButtonClick() {
     editing = true;
@@ -78,10 +128,26 @@
 
 <div id="container">
 
-  {#await articleMarkupPromise}
-    Loading article markup...
-  {:then articleMarkup}
-    {#if !editing}
+  {#await articleIdPromise}
+    Loading article ID...
+  {:then articleId}
+    {#if isEmptyObject(articleId) }
+
+  <div>
+    No article found.
+  </div>
+  <button type="button" on:click={onCreateArticle}>
+    Create Article
+  </button>
+  
+
+
+    {:else} <!-- articleId not empty -->
+
+      {#await articleMarkupPromise}
+        Loading article markup...
+      {:then articleMarkup}
+        {#if !editing}
 
   <menu>
     <li>
@@ -100,7 +166,7 @@
     <ArticleDisplay {articleMarkup} />
   </article>
 
-    {:else}
+       {:else}
 
   <menu>
     <li>
@@ -119,8 +185,12 @@
     <ArticleEdit {articleMarkup} bind:this={articleEditComponent}/>
   </div>
 
-    {/if}
-  {/await}
+        {/if}
+
+      {/await} <!-- articleMarkupPromise -->
+  
+    {/if} <!-- articleId -->
+  {/await} <!-- articleIdPromise -->
 
 </div>
 
