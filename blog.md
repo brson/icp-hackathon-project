@@ -1,10 +1,15 @@
-# Another look at Dfinity (Internet Computer)
+# Another look at programming The Internet Computer (ICP / Dfinity)
 
-It's been more than a year since my [last look at programming on Dfinity].
-With their May 2022 hackathon it was a good opportunity to try again.
+It's been more than a year since my [last look at programming on ICP][ll].
+With their [May 2022 hackathon][hack] it was a good opportunity to try again.
 
-We want to make a project that works well with, and takes advantage of,
-ICP's architecture. Some things we think ICP should be good at:
+[ll]: https://brson.github.io/2021/01/30/dfinity-impressions
+[hack]: https://supernova.devpost.com/
+
+My partner and I want to make a project that works well with,
+and takes advantage of,
+ICP's architecture.
+Some things we think ICP should be good at:
 
 - Static websites - ICP can serve large amounts of static data, like IPFS.
 - Authentication - ICP has a unique Web Authentication-based identity system.
@@ -16,16 +21,74 @@ Some project ideas:
 - A deck-based social media game, Pokemon x Tinder.
 - Something like keybase.
 
+We eventually decided to make a wiki,
+with hopes of also creating a wiki factory &mdash;
+a web app for creating wikis,
+envisioned as a decentralized Wikia.
+This seems like something that should fit the ICP model pretty well,
+and relatively easy to prototype.
+
+
+## How it turned out
+
+ICP has improved a lot in the last year,
+and we enjoyed ourselves a lot more this time.
+
+At times we even felt inspired:
+though we didn't get to test it ourselves,
+ICP has a model that lets contracts pay for themselves,
+where every user transaction does not require the user
+to interact with a crypto wallet.
+That combined with their [`internet-identity`]
+authentication that wraps [WebAuthn]
+makes me think it could eventually be a dapp platform that
+average non-crypto-enthusiasts could understand.
+
+[WebAuthn]: https://webauthn.guide/
+
+We wrote our code in [Motoko],
+Dfinity's smart contract language,
+not Rust.
+This worked out fine:
+the compiler produces pretty good error messages
+and didn't have any major problems.
+The documentation was ok,
+though we did find ourselves reading the Motoko base library source code.
+We wanted an equivalent to Rust's `include_bin!` macro so that we could
+include wasm blobs directly in a program,
+but found other patterns to work around this want.
+
+[Motoko]: https://github.com/dfinity/motoko
+
+We didn't get our project to a working state,
+and didn't submit anything for the hackathon.
+We may continue the project at some point in the future,
+and may revisit ICP again.
+
+
 ## Things we learned
 
 todo
 
-- If the internet-identity caninster won't deploy with
+- Building and deploying the [`internet-identity`] canister
+  required [some changes][icch] to what was described in the examples.
+- If the `internet-identity` caninster won't deploy with
 
   > Error: The Replica returned an error: code 5, message: "Canister rwlgt-iiaaa-aaaaa-aaaaa-cai trapped explicitly: stable memory header: invalid magic: [68, 73, 68]"
 
-  then deleting `.dfx` and trying again will work.
+  then deleting the `.dfx` directory and trying again will work.
+- WASM blobs can be encoded [with a shell pipeline][blob-shell] and passed to
+  `dfx canister call`.
 
+[icch]: #internet-canister-changes
+[`internet-identity`]: https://github.com/dfinity/internet-identity
+
+
+## The project log
+
+The rest of this is just a log of our experience.
+It probably won't be that useful to read straight through,
+but might be useful for ICP developers or those searching for problems like we ran into.
 
 
 ## Getting started (2022/05/10)
@@ -444,6 +507,8 @@ I work around the problem by putting this as the first script in `index.html`:
 ```
 
 
+<a name="internet-canister-changes"/>
+
 ## Creating a skeleton dapp (2022/05/12)
 
 With only a few modifications I got the `svelte-motoko-starter` example working,
@@ -860,6 +925,8 @@ TedR tells me it is at https://github.com/dfinity/sdk
 I feel a bit dumb for not finding it.
 
 
+<a name="blob-shell"/>
+
 ## Pulling something together for submission (2022/06/19)
 
 It's the last day of the hackathon.
@@ -874,3 +941,71 @@ but so far the blob has been truncated and fails to parse the IC management cani
 
 Aimee is going to try to figure that out today so we can at least create new pages.
 I am going to work on the UI for creating pages.
+
+
+## Converting wasm to candid's encoding and uploading it to a canister (2022/06/19)
+
+Still we need our `wiki_backend` canister to load the `page_backend` wasm into
+new page canisters on creation.
+We decided on adding a `initWasmBlob` method to `wiki_backend`,
+that has to be called by an administer prior to creating any pages.
+
+The Motoko method looks like
+
+```
+public func initWasmBlob(wasmModuleBlob : Blob) {
+    pageBackendWasmBlob := ?wasmModuleBlob;
+}
+```
+
+Unable to find a way to get `dfx canister call` to load a parameter from a file,
+we decided that what we needed to do was encode our `pagke_backend.wasm` file
+in a way that `dfx canister call` would accept.
+
+After some trail-and-error experimentation, we descovered that
+we could call our `initWasmBlob` like this:
+
+```
+dfx canister call <canister_id> initWasmBlob "blob \"\00\61\73\6D\01\00\00\00\""
+```
+
+That argument to `initWasmBlob`, without shell quotes and escapes looks like:
+
+```
+blob "\00\61\73\6D\01\00\00\00"
+```
+
+This is the [candid syntax for a blob][csb].
+In this case it's just an empty wasm program.
+A real wasm blob is much longer.
+
+[csb]: https://internetcomputer.org/docs/current/references/candid-ref#type-blob
+
+To get our wasm blob encoded in this format we came up with
+the following shell pipeline that works on both Mac OS and Linux:
+
+```
+od -An -tx1 -v .dfx/local/canisters/page_backend/page_backend.wasm | sed -E "s/[[:space:]]+/\\\/g" | tr -d "\n" | sed '$ s/\\$//' > page_backend.wasmblob
+```
+
+And we called our `wiki_backend` canister with `dfx` to send and initialize the wasm blob:
+
+```
+dfx canister call wiki_backend initWasmBlob "blob \"$(cat page_backend.wasmblob)\""
+```
+
+This worked fine on Mac OS,
+but on Linux it failed with
+
+```
+$ dfx canister call wiki_backend initWasmBlob "blob \"$(cat page_backend.wasmblob)\""
+-bash: /home/brian/bin/dfx: Argument list too long
+```
+
+This is because on Linux arguments are passed on the call stack,
+and the size of the wasm blob exceeds the size of the call stack.
+This can't be fixed with `xargs` but requires messing with `ulimit`
+
+At this point we decided to give up and not submit anything for the hackathon.
+Not enough time left to get something working.
+
