@@ -1,4 +1,5 @@
-TODO
+This was a project for the ICP May 2022 hackathon.
+It is incomplete and not useful.
 
 # Useful commands
 
